@@ -1,0 +1,59 @@
+Model features used: packet_count, total_bytes, avg_packet_size, duration, packet_rate, byte_rate
+Random Forest leave-one-capture-out flows2.csv F1: 0.9568
+Random Forest leave-one-capture-out flows3.csv F1: 0.9713
+Random Forest leave-one-capture-out flows4.csv F1: 0.9685
+Random Forest leave-one-capture-out macro F1 (3 folds): mean=0.9656, std=0.0063
+XGBoost leave-one-capture-out flows2.csv F1: 0.9641
+XGBoost leave-one-capture-out flows3.csv F1: 0.9657
+XGBoost leave-one-capture-out flows4.csv F1: 0.9685
+XGBoost leave-one-capture-out macro F1 (3 folds): mean=0.9661, std=0.0018
+
+Random Forest full test set metrics:
+Per-class metrics:
+  Known: precision=0.9773, recall=0.9556, F1=0.9663
+  Unknown: precision=0.9310, recall=0.9643, F1=0.9474
+Confusion matrix (labels=['Known', 'Unknown']):
+[[86  4]
+ [ 2 54]]
+ROC-AUC: 0.9849
+Top 10 feature importances:
+  packet_rate: 0.357854
+  byte_rate: 0.237711
+  duration: 0.127377
+  total_bytes: 0.097303
+  packet_count: 0.090098
+  avg_packet_size: 0.089657
+
+Random Forest rule-unclassified test set (66 rows) metrics:
+Per-class metrics:
+  Known: precision=0.8333, recall=1.0000, F1=0.9091
+  Unknown: precision=1.0000, recall=0.9643, F1=0.9818
+Confusion matrix (labels=['Known', 'Unknown']):
+[[10  0]
+ [ 2 54]]
+ROC-AUC: 0.9982
+
+XGBoost full test set metrics:
+Per-class metrics:
+  Known: precision=0.9885, recall=0.9556, F1=0.9718
+  Unknown: precision=0.9322, recall=0.9821, F1=0.9565
+Confusion matrix (labels=['Known', 'Unknown']):
+[[86  4]
+ [ 1 55]]
+ROC-AUC: 0.9885
+Top 10 feature importances:
+  packet_rate: 0.419288
+  byte_rate: 0.276376
+  packet_count: 0.148278
+  total_bytes: 0.062485
+  duration: 0.050778
+  avg_packet_size: 0.042795
+
+XGBoost rule-unclassified test set (66 rows) metrics:
+Per-class metrics:
+  Known: precision=0.9091, recall=1.0000, F1=0.9524
+  Unknown: precision=1.0000, recall=0.9821, F1=0.9910
+Confusion matrix (labels=['Known', 'Unknown']):
+[[10  0]
+ [ 1 55]]
+ROC-AUC: 0.9964
