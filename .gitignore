@@ -3,3 +3,7 @@ mlruns/
 *.csv
 *.pcap
 __pycache__/
+
+# Local integration sources and environments
+.integration_sources/
+venv/
