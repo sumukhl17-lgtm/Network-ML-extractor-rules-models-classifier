@@ -1,0 +1,51 @@
+{
+  "amortized_latency_per_record_p95_seconds": 3.572177501191618e-06,
+  "amortized_latency_per_record_p99_seconds": 7.70748918238678e-06,
+  "amortized_latency_per_record_seconds": 3.440512499946635e-06,
+  "chunk_rows": 5000,
+  "elapsed_seconds": 52.016592333005974,
+  "environment": {
+    "pandas": "2.3.3",
+    "platform": "macOS-26.7.1-arm64-arm-64bit",
+    "processor": "arm",
+    "python": "3.12.10 (v3.12.10:0cc81280367, Apr  8 2025, 08:46:59) [Clang 13.0.0 (clang-1300.0.29.30)]",
+    "scikit_learn": "1.6.1"
+  },
+  "error_examples": [],
+  "input_files": [
+    {
+      "bytes": 470188851,
+      "path": "/Users/ullasgowdam/Network-ML-scale-benchmarks/1GB/train.csv"
+    },
+    {
+      "bytes": 529811179,
+      "path": "/Users/ullasgowdam/Network-ML-scale-benchmarks/1GB/test.csv"
+    }
+  ],
+  "latency_calls_seen": 1891,
+  "latency_measurement": "batch wall time; percentile sample is bounded to the first sampled batches",
+  "latency_p50_seconds": 0.017202208502567373,
+  "latency_p95_seconds": 0.017860887505958087,
+  "latency_p99_seconds": 0.0385374459119339,
+  "latency_sample_count": 1000,
+  "ml_predictions_by_label": {
+    "Known": 6050525,
+    "Unknown": 448947
+  },
+  "mode": "optimized",
+  "model_path": "/Users/ullasgowdam/Network-ML-extractor-rules-models-classifier/rf.joblib",
+  "model_sha256": "1adc8b9ff7ec3b718bf1bd37cc568a230ad86e2345fd07fffcf562a328806483",
+  "peak_rss_bytes": 457457664,
+  "process_cpu_percent_of_one_core": 99.93057728046698,
+  "process_cpu_seconds": 51.980481,
+  "records_errored": 0,
+  "records_processed": 9452387,
+  "records_seen": 9452387,
+  "rule_classifications_by_label": {
+    "DNS": 590356,
+    "HTTP": 590509,
+    "HTTPS": 1182297,
+    "SSH": 589753
+  },
+  "throughput_records_per_second": 181718.6896728373
+}

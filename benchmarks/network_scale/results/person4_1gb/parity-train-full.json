@@ -1,0 +1,28 @@
+{
+  "input": "/Users/ullasgowdam/Network-ML-scale-benchmarks/1GB/train.csv",
+  "records_seen": 4444443,
+  "records_compared": 4444443,
+  "records_with_errors": 0,
+  "baseline_sha256": "8c7cf9bbb935a2793b6e2e8c99aa7e411b0067049f23e5d246d091cde0ec636d",
+  "optimized_sha256": "8c7cf9bbb935a2793b6e2e8c99aa7e411b0067049f23e5d246d091cde0ec636d",
+  "all_predictions_identical": true,
+  "baseline_label_counts": {
+    "Known": 2843081,
+    "HTTP": 277963,
+    "HTTPS": 556761,
+    "DNS": 277999,
+    "SSH": 277515,
+    "Unknown": 211124
+  },
+  "optimized_label_counts": {
+    "Known": 2843081,
+    "HTTP": 277963,
+    "HTTPS": 556761,
+    "DNS": 277999,
+    "SSH": 277515,
+    "Unknown": 211124
+  },
+  "mismatches": [],
+  "errors": [],
+  "elapsed_seconds": 8713.861056917
+}

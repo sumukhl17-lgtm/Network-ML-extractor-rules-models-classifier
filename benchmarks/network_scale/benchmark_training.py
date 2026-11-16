@@ -17,6 +17,31 @@ TRAIN_SCRIPT = REPOSITORY_ROOT / "train_compare.py"
 METRICS_NAME = "training_stage_metrics.json"
 
 
+def _install_prediction_timing_wrappers(model_classes, metrics, stage) -> None:
+    for model_class in model_classes:
+        for method_name in ("predict", "predict_proba"):
+            original_method = getattr(model_class, method_name)
+
+            def make_timed_prediction(original):
+                def timed_prediction(self, *args, **kwargs):
+                    start = time.perf_counter()
+                    try:
+                        return original(self, *args, **kwargs)
+                    finally:
+                        if stage[0] == "final":
+                            metrics["final_prediction_seconds"] += (
+                                time.perf_counter() - start
+                            )
+
+                return timed_prediction
+
+            setattr(
+                model_class,
+                method_name,
+                make_timed_prediction(original_method),
+            )
+
+
 def _validate_paths(train_csv: Path, test_csv: Path, run_dir: Path) -> None:
     if not train_csv.is_file() or not test_csv.is_file():
         raise FileNotFoundError("train and test CSV files must exist")
@@ -39,6 +64,7 @@ sys.path.insert(0, os.environ["NETWORK_ML_REPOSITORY"])
 import train_compare
 from sklearn.ensemble import RandomForestClassifier
 from xgboost import XGBClassifier
+from benchmarks.network_scale.benchmark_training import _install_prediction_timing_wrappers
 
 metrics = {
     "cross_validation_wall_seconds": 0.0,
@@ -59,22 +85,9 @@ def timed_cross_validate(*args, **kwargs):
         stage[0] = "final"
 train_compare._cross_validate = timed_cross_validate
 
-original_make_models = train_compare._make_models
-def timed_make_models(*args, **kwargs):
-    models = original_make_models(*args, **kwargs)
-    for model in models.values():
-        for method_name in ("predict", "predict_proba"):
-            original = getattr(model, method_name)
-            def timed_prediction(*positional, _original=original, **named):
-                start = time.perf_counter()
-                try:
-                    return _original(*positional, **named)
-                finally:
-                    if stage[0] == "final":
-                        metrics["final_prediction_seconds"] += time.perf_counter() - start
-            setattr(model, method_name, timed_prediction)
-    return models
-train_compare._make_models = timed_make_models
+_install_prediction_timing_wrappers(
+    (RandomForestClassifier, XGBClassifier), metrics, stage
+)
 
 for model_class in (RandomForestClassifier, XGBClassifier):
     original_fit = model_class.fit

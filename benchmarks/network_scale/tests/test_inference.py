@@ -13,6 +13,19 @@ from benchmarks.network_scale.generate_flow_csv import generate_dataset
 from benchmarks.network_scale.optimized_inference import classify_batch
 
 
+class _OrderedClassModel:
+    classes_ = [1, 0]
+
+    def predict(self, features):
+        return [0 if value == 1 else 1 for value in features["duration"]]
+
+    def predict_proba(self, features):
+        return [
+            [0.2, 0.8] if value == 1 else [0.7, 0.3]
+            for value in features["duration"]
+        ]
+
+
 def _load_flows(path, count):
     return pd.read_csv(path, nrows=count).to_dict(orient="records")
 
@@ -52,6 +65,50 @@ def test_ml_override_mode_parity(tmp_path, monkeypatch):
     )
     assert actual == expected
     assert all(result["source"] in ("rule", "ml") for result in actual)
+
+
+def test_batch_predictions_confidence_and_rule_precedence_match_baseline(monkeypatch):
+    model = _OrderedClassModel()
+    features = ["duration"]
+    flows = [
+        {"src_port": 5555, "dst_port": 443, "duration": 99},
+        {"src_port": 5555, "dst_port": 5556, "duration": 1},
+        {"src_port": 5557, "dst_port": 5558, "duration": 2},
+    ]
+    monkeypatch.setattr(classify_network, "_MODEL", model)
+    monkeypatch.setattr(classify_network, "_MODEL_FEATURES", features)
+
+    for overrides in (False, True):
+        monkeypatch.setattr(classify_network, "ML_OVERRIDES_UNMATCHED", overrides)
+        expected = [classify_network.classify_network(flow) for flow in flows]
+        actual = classify_batch(flows, model, features, overrides)
+
+        assert actual == expected
+        assert actual[0] == {"label": "HTTPS", "source": "rule"}
+        if overrides:
+            assert actual[1] == {
+                "label": "Known",
+                "source": "ml",
+                "confidence": 0.8,
+            }
+            assert actual[2] == {
+                "label": "Unknown",
+                "source": "ml",
+                "confidence": 0.7,
+            }
+        else:
+            assert actual[1] == {
+                "label": "Unknown",
+                "source": "default",
+                "ml_label": "Known",
+                "ml_confidence": 0.8,
+            }
+            assert actual[2] == {
+                "label": "Unknown",
+                "source": "default",
+                "ml_label": "Unknown",
+                "ml_confidence": 0.7,
+            }
 
 
 def test_streaming_benchmark_bounds_batches_and_counts_results(tmp_path, monkeypatch):

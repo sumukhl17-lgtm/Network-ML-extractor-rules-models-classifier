@@ -1,0 +1,14 @@
+{
+  "scope": "1GB only",
+  "records_processed": 9452387,
+  "baseline_throughput": 542.5847505117434,
+  "optimized_throughput": 183747.78488752112,
+  "observed_throughput_ratio": 338.6526892143906,
+  "baseline_peak_memory_mib": 501.625,
+  "optimized_peak_memory_mib": 426.09375,
+  "baseline_elapsed_seconds": 17421.033287583,
+  "optimized_elapsed_seconds": 51.442182042010245,
+  "baseline_errors": 0,
+  "optimized_errors": 0,
+  "latency_percentiles_directly_comparable": false
+}

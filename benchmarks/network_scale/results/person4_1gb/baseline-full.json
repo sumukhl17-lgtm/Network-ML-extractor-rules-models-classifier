@@ -1,0 +1,51 @@
+{
+  "amortized_latency_per_record_p95_seconds": null,
+  "amortized_latency_per_record_p99_seconds": null,
+  "amortized_latency_per_record_seconds": null,
+  "chunk_rows": 5000,
+  "elapsed_seconds": 17421.033287583,
+  "environment": {
+    "pandas": "2.3.3",
+    "platform": "macOS-26.7.1-arm64-arm-64bit",
+    "processor": "arm",
+    "python": "3.12.10 (v3.12.10:0cc81280367, Apr  8 2025, 08:46:59) [Clang 13.0.0 (clang-1300.0.29.30)]",
+    "scikit_learn": "1.6.1"
+  },
+  "error_examples": [],
+  "input_files": [
+    {
+      "bytes": 470188851,
+      "path": "/Users/ullasgowdam/Network-ML-scale-benchmarks/1GB/train.csv"
+    },
+    {
+      "bytes": 529811179,
+      "path": "/Users/ullasgowdam/Network-ML-scale-benchmarks/1GB/test.csv"
+    }
+  ],
+  "latency_calls_seen": 9452387,
+  "latency_measurement": "per-record classify_network call wall time; bounded first-record sample",
+  "latency_p50_seconds": 0.0026595204981276765,
+  "latency_p95_seconds": 0.002714749993174337,
+  "latency_p99_seconds": 0.0027856820057786534,
+  "latency_sample_count": 1000,
+  "ml_predictions_by_label": {
+    "Known": 6050525,
+    "Unknown": 448947
+  },
+  "mode": "baseline",
+  "model_path": "/Users/ullasgowdam/Network-ML-extractor-rules-models-classifier/rf.joblib",
+  "model_sha256": "1adc8b9ff7ec3b718bf1bd37cc568a230ad86e2345fd07fffcf562a328806483",
+  "peak_rss_bytes": 525991936,
+  "process_cpu_percent_of_one_core": 99.94057074909341,
+  "process_cpu_seconds": 17410.680098,
+  "records_errored": 0,
+  "records_processed": 9452387,
+  "records_seen": 9452387,
+  "rule_classifications_by_label": {
+    "DNS": 590356,
+    "HTTP": 590509,
+    "HTTPS": 1182297,
+    "SSH": 589753
+  },
+  "throughput_records_per_second": 542.5847505117434
+}

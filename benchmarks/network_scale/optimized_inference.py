@@ -41,6 +41,7 @@ def classify_batch(
     predictions = model.predict(features)
     probabilities = model.predict_proba(features)
     class_labels = [_label_for_class(value) for value in model.classes_]
+    class_index = {label: index for index, label in enumerate(class_labels)}
 
     for offset, index in enumerate(unmatched_indexes):
         predicted_label = _label_for_class(predictions[offset])
@@ -50,7 +51,7 @@ def classify_batch(
                     predictions[offset]
                 )
             )
-        confidence = float(probabilities[offset][class_labels.index(predicted_label)])
+        confidence = float(probabilities[offset][class_index[predicted_label]])
         if ml_overrides_unmatched:
             results[index] = {
                 "label": predicted_label,

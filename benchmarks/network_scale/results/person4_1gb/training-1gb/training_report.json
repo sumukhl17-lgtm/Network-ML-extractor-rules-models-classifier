@@ -1,0 +1,36 @@
+{
+  "elapsed_seconds": 5990.393620000003,
+  "environment": {
+    "platform": "macOS-26.7.1-arm64-arm-64bit",
+    "python": "3.12.10 (v3.12.10:0cc81280367, Apr  8 2025, 08:46:59) [Clang 13.0.0 (clang-1300.0.29.30)]"
+  },
+  "error": {
+    "exit_code": 1,
+    "stderr_tail": "2026/11/14 13:25:55 INFO mlflow.tracking.fluent: Experiment with name 'network-known-unknown' does not exist. Creating a new experiment.\n\u001b[31m2026/11/14 15:05:15 WARNING mlflow.models.model: Model logged without a signature and input example. Please set `input_example` parameter when logging the model to auto infer the model signature.\u001b[0m\n/Users/ullasgowdam/Network-ML-extractor-rules-models-classifier/.venv312/lib/python3.12/site-packages/xgboost/core.py:158: UserWarning: [15:05:36] WARNING: /Users/runner/work/xgboost/xgboost/src/c_api/c_api.cc:1374: Saving model in the UBJSON format as default.  You can use file extension: `json`, `ubj` or `deprecated` to choose between formats.\n  warnings.warn(smsg, UserWarning)\n\u001b[31m2026/11/14 15:05:38 WARNING mlflow.models.model: Model logged without a signature and input example. Please set `input_example` parameter when logging the model to auto infer the model signature.\u001b[0m\nTraceback (most recent call last):\n  File \"/Users/ullasgowdam/Network-ML-scale-benchmarks/training-1gb/isolated_training_driver.py\", line 72, in <module>\n    train_compare.main()\n  File \"/Users/ullasgowdam/Network-ML-extractor-rules-models-classifier/train_compare.py\", line 361, in main\n    joblib.dump(models[\"Random Forest\"], \"rf.joblib\")\n  File \"/Users/ullasgowdam/Network-ML-extractor-rules-models-classifier/.venv312/lib/python3.12/site-packages/joblib/numpy_pickle.py\", line 600, in dump\n    NumpyPickler(f, protocol=protocol).dump(value)\n  File \"/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/pickle.py\", line 484, in dump\n    self.save(obj)\n  File \"/Users/ullasgowdam/Network-ML-extractor-rules-models-classifier/.venv312/lib/python3.12/site-packages/joblib/numpy_pickle.py\", line 395, in save\n    return Pickler.save(self, obj)\n           ^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/pickle.py\", line 601, in save\n    self.save_reduce(obj=obj, *rv)\n  File \"/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/pickle.py\", line 715, in save_reduce\n    save(state)\n  File \"/Users/ullasgowdam/Network-ML-extractor-rules-models-classifier/.venv312/lib/python3.12/site-packages/joblib/numpy_pickle.py\", line 395, in save\n    return Pickler.save(self, obj)\n           ^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/pickle.py\", line 558, in save\n    f(self, obj)  # Call unbound method with explicit self\n    ^^^^^^^^^^^^\n  File \"/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/pickle.py\", line 990, in save_dict\n    self._batch_setitems(obj.items())\n  File \"/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/pickle.py\", line 1014, in _batch_setitems\n    save(v)\n  File \"/Users/ullasgowdam/Network-ML-extractor-rules-models-classifier/.venv312/lib/python3.12/site-packages/joblib/numpy_pickle.py\", line 395, in save\n    return Pickler.save(self, obj)\n           ^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/pickle.py\", line 558, in save\n    f(self, obj)  # Call unbound method with explicit self\n    ^^^^^^^^^^^^\n  File \"/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/pickle.py\", line 1087, in save_global\n    raise PicklingError(\n_pickle.PicklingError: Can't pickle <function timed_make_models.<locals>.timed_prediction at 0x1014bc7c0>: it's not found as __main__.timed_make_models.<locals>.timed_prediction\n"
+  },
+  "exit_code": 1,
+  "mlflow_tracking_uri": "file:///Users/ullasgowdam/Network-ML-scale-benchmarks/training-1gb/mlruns",
+  "model_outputs": {
+    "rf.joblib": {
+      "bytes": 2,
+      "path": "/Users/ullasgowdam/Network-ML-scale-benchmarks/training-1gb/rf.joblib",
+      "sha256": "057cbbfb4f5936e7b5e66856bf25d1fb46a0413143c0e7528ba137d2c2d024d1"
+    },
+    "xgb.json": null
+  },
+  "peak_rss_bytes": 9144188928,
+  "run_dir": "/Users/ullasgowdam/Network-ML-scale-benchmarks/training-1gb",
+  "stage_metrics": {
+    "cross_validation_fit_seconds": 4789.997541334989,
+    "cross_validation_wall_seconds": 4894.966795958986,
+    "error": "PicklingError(\"Can't pickle <function timed_make_models.<locals>.timed_prediction at 0x1014bc7c0>: it's not found as __main__.timed_make_models.<locals>.timed_prediction\")",
+    "final_fit_seconds": 780.8857584170037,
+    "final_metrics_seconds": 2.1825431659963215,
+    "final_prediction_seconds": 401.66887691500597,
+    "other_wall_seconds": 314.54106562401284
+  },
+  "stderr_log": "/Users/ullasgowdam/Network-ML-scale-benchmarks/training-1gb/training.stderr.log",
+  "stdout_log": "/Users/ullasgowdam/Network-ML-scale-benchmarks/training-1gb/training.stdout.log",
+  "test_csv": "/Users/ullasgowdam/Network-ML-scale-benchmarks/1GB/test.csv",
+  "train_csv": "/Users/ullasgowdam/Network-ML-scale-benchmarks/1GB/train.csv"
+}
