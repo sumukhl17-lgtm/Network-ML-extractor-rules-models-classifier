@@ -1,0 +1,38 @@
+# Unified dependencies for the integrated platform.
+# Target runtime: Python 3.12. The Docker default text model and root network model
+# are both compatible with scikit-learn 1.6.1. The original, non-default text model
+# in backend/text/models/ was trained with 1.9.1; do not select it without matching
+# the runtime version or retraining it.
+
+# Shared numerical and model stack
+SQLAlchemy==2.0.54
+numpy==2.0.2
+pandas==2.3.3
+scikit-learn==1.6.1
+scipy==1.13.1
+joblib==1.5.3
+mlflow==3.18.0
+skops==0.13.0
+nfstream==6.6.0
+xgboost==2.1.4
+
+# API and the preserved Flask prototype
+fastapi==0.128.8
+starlette==0.49.3
+uvicorn==0.39.0
+pydantic==2.13.5
+python-multipart>=0.0.9,<1
+Flask==3.1.3
+
+# Document extraction
+pypdf>=4.0,<7
+python-docx>=1.1,<2
+
+# Tests
+pytest==8.4.2
+httpx>=0.27,<1
+reportlab>=4.0,<6
+
+# Optional external service:
+# Apache Tika is a separate server, not a Python dependency. Set TIKA_URL to use it.
+# Without Tika, local PDF, DOCX and plain-text extraction uses pypdf/python-docx.

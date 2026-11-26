@@ -1,0 +1,22 @@
+FROM python:3.12-slim
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1 \
+    TF_USE_LEGACY_KERAS=1 \
+    TFHUB_CACHE_DIR=/var/cache/audio-models/tfhub
+
+WORKDIR /app
+
+COPY audio_service/requirements.txt /app/audio_service/requirements.txt
+COPY audio_service/requirements-inference.txt /app/audio_service/requirements-inference.txt
+RUN python -m pip install --upgrade pip \
+    && python -m pip install \
+        -r /app/audio_service/requirements.txt \
+        -r /app/audio_service/requirements-inference.txt
+
+COPY audio_service/ /app/audio_service/
+
+EXPOSE 8002
+
+CMD ["python", "-m", "audio_service.worker_main"]
