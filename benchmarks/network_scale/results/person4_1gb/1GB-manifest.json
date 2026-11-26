@@ -1,0 +1,95 @@
+{
+  "actual_total_bytes": 1000000030,
+  "chunk_rows": 50000,
+  "files": {
+    "test.csv": {
+      "bytes": 529811179,
+      "label_counts": {
+        "Known": 2503972,
+        "Unknown": 2503972
+      },
+      "path": "test.csv",
+      "rows": 5007944,
+      "sha256": "f21c366f0c37dd434099c6814dce9879851c009c81597c3fc670f522c24e77fa"
+    },
+    "train.csv": {
+      "bytes": 470188851,
+      "label_counts": {
+        "Known": 2222222,
+        "Unknown": 2222221
+      },
+      "path": "train.csv",
+      "rows": 4444443,
+      "sha256": "4d35e33e5437996f3376e3e77e6dc63eaf76d76432fc4419edb517858c37f28c"
+    }
+  },
+  "format_version": 1,
+  "generation_parameters": {
+    "anomalous_mix_per_four_rows": 1,
+    "application_is_guessed": 0,
+    "csv_encoding": "UTF-8",
+    "normal_mix_per_four_rows": 2,
+    "numeric_float_precision": 6,
+    "suspicious_mix_per_four_rows": 1
+  },
+  "record_count": 9452387,
+  "schema": {
+    "columns": [
+      "src_port",
+      "dst_port",
+      "protocol",
+      "packet_count",
+      "total_bytes",
+      "avg_packet_size",
+      "duration",
+      "packet_rate",
+      "byte_rate",
+      "syn",
+      "fin",
+      "rst",
+      "psh",
+      "ack",
+      "application_name",
+      "application_is_guessed",
+      "label",
+      "source_file"
+    ],
+    "float_columns": [
+      "avg_packet_size",
+      "byte_rate",
+      "duration",
+      "packet_rate"
+    ],
+    "integer_columns": [
+      "ack",
+      "application_is_guessed",
+      "dst_port",
+      "fin",
+      "packet_count",
+      "protocol",
+      "psh",
+      "rst",
+      "src_port",
+      "syn",
+      "total_bytes"
+    ],
+    "string_columns": [
+      "application_name",
+      "label",
+      "source_file"
+    ]
+  },
+  "seed": 20261112,
+  "split": {
+    "test_rows": 5007944,
+    "train_fraction_requested": 0.8,
+    "train_rows": 4444443
+  },
+  "synthetic_traffic_category_counts": {
+    "anomalous": 2363097,
+    "normal": 4726194,
+    "suspicious": 2363096
+  },
+  "target_bytes_minimum": 1000000000,
+  "target_overshoot_bytes": 30
+}

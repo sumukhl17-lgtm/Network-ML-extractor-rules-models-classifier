@@ -1,0 +1,5 @@
+# Optional Video-only dependencies; keep them out of the shared Network/Text environment.
+# Install in an environment compatible with the host's CPU/GPU and Python version.
+torch>=2.2
+transformers>=4.40,<5
+Pillow>=10

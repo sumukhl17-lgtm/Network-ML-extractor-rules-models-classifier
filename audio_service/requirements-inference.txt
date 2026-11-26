@@ -1,0 +1,11 @@
+tensorflow==2.19.0
+tf-keras==2.19.0
+tensorflow-hub==0.16.1
+setuptools==80.9.0
+scipy==1.13.1
+scikit-learn==1.6.1
+SQLAlchemy==2.0.54
+joblib==1.5.3
+pandas==2.3.3
+mlflow==3.18.0
+skops==0.13.0

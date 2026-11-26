@@ -1,0 +1,237 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    restart: unless-stopped
+    environment:
+      MLFLOW_TRACKING_URI: http://mlflow:5000
+      TEXT_MODEL_SOURCE: local
+      TEXT_STRICT_VERSIONS: "1"
+      TEXT_EXTRACTOR: auto
+      TIKA_URL: http://tika:9998
+      APP_CORS_ORIGINS: ${APP_CORS_ORIGINS:-http://localhost:8080,http://127.0.0.1:8080}
+      APP_DATA_DIR: /app/backend/app_data
+      VIDEO_SERVICE_URL: http://video-api:8003
+      VIDEO_MAX_BYTES: ${VIDEO_MAX_BYTES:-209715200}
+      AUDIO_SERVICE_URL: http://audio-api:8001
+      AUDIO_SERVICE_TOKEN: ${AUDIO_SERVICE_TOKEN:?Set AUDIO_SERVICE_TOKEN in .env}
+      AUDIO_MAX_UPLOAD_BYTES: ${AUDIO_MAX_UPLOAD_BYTES:-20971520}
+    ports:
+      - "${BACKEND_PORT:-8000}:8000"
+    volumes:
+      - backend_data:/app/backend/app_data
+    depends_on:
+      mlflow:
+        condition: service_healthy
+      tika:
+        condition: service_healthy
+      video-api:
+        condition: service_healthy
+      audio-api:
+        condition: service_healthy
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - from urllib.request import urlopen; urlopen('http://127.0.0.1:8000/ready', timeout=4).close()
+      interval: 30s
+      timeout: 5s
+      start_period: 180s
+      retries: 3
+
+  frontend:
+    build:
+      context: frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_API_URL: /api
+    restart: unless-stopped
+    ports:
+      - "${FRONTEND_PORT:-8080}:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1/"]
+      interval: 30s
+      timeout: 5s
+      start_period: 10s
+      retries: 3
+
+  mlflow:
+    build:
+      context: mlflow
+      dockerfile: Dockerfile
+    command:
+      - mlflow
+      - server
+      - --host
+      - 0.0.0.0
+      - --port
+      - "5000"
+      - --backend-store-uri
+      - sqlite:////mlflow/data/mlflow.db
+      - --artifacts-destination
+      - /mlflow/data/artifacts
+      - --serve-artifacts
+      - --allowed-hosts
+      - mlflow:5000,localhost,localhost:5001
+    restart: unless-stopped
+    ports:
+      - "${MLFLOW_PORT:-5001}:5000"
+    volumes:
+      - type: bind
+        source: ./mlflow/data
+        target: /mlflow/data
+        bind:
+          create_host_path: true
+    networks:
+      - default
+      - audio-internal
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - from urllib.request import urlopen; urlopen('http://127.0.0.1:5000/health', timeout=4).close()
+      interval: 30s
+      timeout: 5s
+      start_period: 30s
+      retries: 3
+
+  tika:
+    image: ${TIKA_IMAGE:-apache/tika@sha256:b99f19c4fd76237dafe7d22f719b9bddfa9a449da687c597a41e2f6d9a595418}
+    restart: unless-stopped
+    ports:
+      - "${TIKA_PORT:-9998}:9998"
+    healthcheck:
+      test:
+        - CMD
+        - bash
+        - -c
+        - 'exec 3<>/dev/tcp/127.0.0.1/9998 && printf "GET /tika HTTP/1.1\r\nHost: localhost\r\nConnection: close\r\n\r\n" >&3 && IFS=" " read -r protocol status _ <&3 && [[ "$$protocol" == HTTP/1.* && "$$status" == 200 ]]'
+      interval: 30s
+      timeout: 5s
+      start_period: 60s
+      retries: 3
+
+  video-api:
+    build:
+      context: .
+      dockerfile: video_service/Dockerfile
+    restart: unless-stopped
+    environment:
+      VIDEO_MODEL_SOURCE: pretrained
+      VIDEO_MODEL_CACHE: /models
+      VIDEO_MAX_BYTES: ${VIDEO_MAX_BYTES:-209715200}
+      VIDEO_MAX_DURATION_SECONDS: ${VIDEO_MAX_DURATION_SECONDS:-600}
+      VIDEO_MAX_FRAMES: ${VIDEO_MAX_FRAMES:-12}
+      VIDEO_SAMPLE_INTERVAL_SECONDS: ${VIDEO_SAMPLE_INTERVAL_SECONDS:-2}
+    expose:
+      - "8003"
+    volumes:
+      - video_model_cache:/models
+    mem_limit: ${VIDEO_MEMORY_LIMIT:-4g}
+    cpus: ${VIDEO_CPU_QUOTA:-2.0}
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - from urllib.request import urlopen; urlopen('http://127.0.0.1:8003/classify/video/health', timeout=4).close()
+      interval: 30s
+      timeout: 5s
+      start_period: 30s
+      retries: 3
+
+  audio-api:
+    build:
+      context: .
+      dockerfile: audio_service/Dockerfile
+    command: ["python", "-m", "audio_service"]
+    restart: unless-stopped
+    deploy:
+      replicas: 1
+    environment:
+      AUDIO_SERVICE_TOKEN: ${AUDIO_SERVICE_TOKEN:?Set AUDIO_SERVICE_TOKEN in .env}
+      AUDIO_SERVICE_HOST: 0.0.0.0
+      AUDIO_SERVICE_PORT: "8001"
+      AUDIO_WORKER_URL: http://audio-worker:8002
+      AUDIO_MAX_UPLOAD_BYTES: ${AUDIO_MAX_UPLOAD_BYTES:-20971520}
+      AUDIO_DECODE_TIMEOUT_SECONDS: ${AUDIO_DECODE_TIMEOUT_SECONDS:-30}
+      AUDIO_INFERENCE_TIMEOUT_SECONDS: ${AUDIO_INFERENCE_TIMEOUT_SECONDS:-120}
+      AUDIO_MAX_CONCURRENT_DECODE_JOBS: ${AUDIO_MAX_CONCURRENT_DECODE_JOBS:-1}
+    expose:
+      - "8001"
+    networks:
+      - default
+      - audio-internal
+    depends_on:
+      audio-worker:
+        condition: service_healthy
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - from urllib.request import urlopen; urlopen('http://127.0.0.1:8001/ready', timeout=4).close()
+      interval: 15s
+      timeout: 5s
+      start_period: 15s
+      retries: 3
+
+  audio-worker:
+    build:
+      context: .
+      dockerfile: audio_service/Dockerfile.worker
+    command: ["python", "-m", "audio_service.worker_main"]
+    restart: unless-stopped
+    deploy:
+      replicas: 1
+    environment:
+      AUDIO_SERVICE_TOKEN: ${AUDIO_SERVICE_TOKEN:?Set AUDIO_SERVICE_TOKEN in .env}
+      AUDIO_MODEL_SOURCE: ${AUDIO_MODEL_SOURCE:-bundle}
+      AUDIO_SERVICE_HOST: 0.0.0.0
+      AUDIO_WORKER_PORT: "8002"
+      AUDIO_MAX_UPLOAD_BYTES: ${AUDIO_MAX_UPLOAD_BYTES:-20971520}
+      AUDIO_DECODE_TIMEOUT_SECONDS: ${AUDIO_DECODE_TIMEOUT_SECONDS:-30}
+      AUDIO_INFERENCE_TIMEOUT_SECONDS: ${AUDIO_INFERENCE_TIMEOUT_SECONDS:-120}
+      AUDIO_MAX_CONCURRENT_DECODE_JOBS: ${AUDIO_MAX_CONCURRENT_DECODE_JOBS:-1}
+      AUDIO_CHILD_CPU_LIMIT_SECONDS: ${AUDIO_CHILD_CPU_LIMIT_SECONDS:-25}
+      AUDIO_CHILD_ADDRESS_SPACE_LIMIT_BYTES: ${AUDIO_CHILD_ADDRESS_SPACE_LIMIT_BYTES:-}
+      MLFLOW_TRACKING_URI: http://mlflow:5000
+      TF_USE_LEGACY_KERAS: "1"
+      TFHUB_CACHE_DIR: /var/cache/audio-models/tfhub
+    expose:
+      - "8002"
+    volumes:
+      - audio_model_cache:/var/cache/audio-models
+    networks:
+      - default
+      - audio-internal
+    depends_on:
+      mlflow:
+        condition: service_healthy
+    mem_limit: ${AUDIO_WORKER_MEMORY_LIMIT:-1g}
+    cpus: ${AUDIO_WORKER_CPU_QUOTA:-1.0}
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - from urllib.request import urlopen; urlopen('http://127.0.0.1:8002/ready', timeout=4).close()
+      interval: 15s
+      timeout: 5s
+      start_period: 120s
+      retries: 3
+
+volumes:
+  backend_data:
+  video_model_cache:
+  audio_model_cache:
+
+networks:
+  audio-internal:
+    internal: true

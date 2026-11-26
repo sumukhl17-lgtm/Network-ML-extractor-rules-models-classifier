@@ -3,3 +3,38 @@ mlruns/
 *.csv
 *.pcap
 __pycache__/
+
+# Local integration sources and environments
+.integration_sources/
+venv/
+
+.venv312/
+
+# Local environment secrets
+.env
+.env.*
+!.env.example
+backups/
+*.save
+.vscode/
+
+# Local ESC-50 training dataset (download separately; not needed for inference)
+datasets/ESC-50/
+
+# Local MLflow tracking database and state
+mlflow/data/
+
+# Installed frontend dependencies
+node_modules/
+
+# Generated frontend production build
+frontend/dist/
+
+# Operating-system metadata
+.DS_Store
+
+# Keep only the small synthetic Network API smoke-test captures
+!backend/platform_api/tests/fixtures/
+!backend/platform_api/tests/fixtures/network/
+!backend/platform_api/tests/fixtures/network/test_network.pcap
+!backend/platform_api/tests/fixtures/network/test_unknown_network.pcap

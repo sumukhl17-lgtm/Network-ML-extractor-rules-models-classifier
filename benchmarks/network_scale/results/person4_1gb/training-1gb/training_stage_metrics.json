@@ -1,0 +1,8 @@
+{
+  "cross_validation_wall_seconds": 4894.966795958986,
+  "cross_validation_fit_seconds": 4789.997541334989,
+  "final_fit_seconds": 780.8857584170037,
+  "final_prediction_seconds": 401.66887691500597,
+  "final_metrics_seconds": 2.1825431659963215,
+  "error": "PicklingError(\"Can't pickle <function timed_make_models.<locals>.timed_prediction at 0x1014bc7c0>: it's not found as __main__.timed_make_models.<locals>.timed_prediction\")"
+}

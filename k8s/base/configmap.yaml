@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: platform-config
+data:
+  MLFLOW_TRACKING_URI: http://mlflow:5000
+  TEXT_MODEL_SOURCE: auto
+  TEXT_EXTRACTOR: auto
+  TIKA_URL: http://tika:9998
+  APP_CORS_ORIGINS: http://localhost:8080,http://127.0.0.1:8080
+  APP_DATA_DIR: /app/backend/app_data
